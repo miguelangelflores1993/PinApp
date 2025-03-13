@@ -4,6 +4,8 @@ import Flutter
 @main
 @objc class AppDelegate: FlutterAppDelegate {
 
+    let commentsService = CommentsService()
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -11,83 +13,52 @@ import Flutter
         GeneratedPluginRegistrant.register(with: self)
         
         let controller = window?.rootViewController as! FlutterViewController
-        let channel = FlutterMethodChannel(name: "comments_channel",
-                                           binaryMessenger: controller.binaryMessenger)
+        let channel = FlutterMethodChannel(name: "comments_channel", binaryMessenger: controller.binaryMessenger)
         
         channel.setMethodCallHandler { (call, result) in
             if call.method == "getComments" {
-                guard let args = call.arguments as? [String: Any],
-                      let postId = args["postId"] as? Int else {
+                guard let args = call.arguments as? [String: Any], let postId = args["postId"] as? Int else {
                     result(FlutterError(code: "INVALID_ARGUMENT", message: "Invalid postId", details: nil))
                     return
                 }
-                // Llamar a la función para obtener los comentarios
+                
                 self.fetchComments(postId: postId, result: result)
             } else {
                 result(FlutterMethodNotImplemented)
             }
         }
-
-        // Llamar al método padre para asegurar que se inicie la aplicación correctamente
+        
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 
     private func fetchComments(postId: Int, result: @escaping FlutterResult) {
-        let urlString = "https://jsonplaceholder.typicode.com/comments?postId=\(postId)"
-        guard let url = URL(string: urlString) else {
-            result(FlutterError(code: "INVALID_URL", message: "Invalid URL", details: nil))
-            return
-        }
-
-
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                result(FlutterError(code: "NETWORK_ERROR", message: error.localizedDescription, details: nil))
-                return
-            }
-
-        
-            guard let data = data else {
-                result(FlutterError(code: "NO_DATA", message: "No data received", details: nil))
-                return
-            }
-
-            let decoder = JSONDecoder()
-            do {
-                let comments = try decoder.decode([Comment].self, from: data)
-              
-                let commentsJson = self.convertCommentsToJson(comments)
+        commentsService.fetchComments(postId: postId) { response in
+            switch response {
+            case .success(let comments):
+                let commentsJson = JSONConverter.convertCommentsToJson(comments)
                 result(commentsJson)
-            } catch {
-                result(FlutterError(code: "JSON_ERROR", message: "Failed to decode JSON", details: error.localizedDescription))
+                
+            case .failure(let error):
+                result(self.handleError(error))
             }
         }
-
-        task.resume()
     }
-    
- 
-    private func convertCommentsToJson(_ comments: [Comment]) -> [[String: Any]] {
-        var jsonArray: [[String: Any]] = []
-        for comment in comments {
-            let dict: [String: Any] = [
-                "postId": comment.postId,
-                "id": comment.id,
-                "name": comment.name,
-                "email": comment.email,
-                "body": comment.body
-            ]
-            jsonArray.append(dict)
+
+    private func handleError(_ error: Error) -> FlutterError {
+        switch error {
+        case let error as NetworkError:
+            switch error {
+            case .invalidURL:
+                return FlutterError(code: "INVALID_URL", message: "Invalid URL", details: nil)
+            case .networkError(let message):
+                return FlutterError(code: "NETWORK_ERROR", message: message, details: nil)
+            case .noData:
+                return FlutterError(code: "NO_DATA", message: "No data received", details: nil)
+            case .jsonParsingError(let message):
+                return FlutterError(code: "JSON_ERROR", message: "Failed to decode JSON", details: message)
+            }
+        default:
+            return FlutterError(code: "UNKNOWN_ERROR", message: "An unknown error occurred", details: nil)
         }
-        return jsonArray
     }
-}
-
-// Modelo de comentario que corresponde al formato JSON
-struct Comment: Codable {
-    let postId: Int
-    let id: Int
-    let name: String
-    let email: String
-    let body: String
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -67,6 +67,12 @@
 		F46762FF58E08D617A3CCEDE /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8BE2401F2D8389D700BB8EBD /* Services */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Services; sourceTree = "<group>"; };
+		8BE240202D8389DD00BB8EBD /* Utils */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utils; sourceTree = "<group>"; };
+		8BE240212D8389E700BB8EBD /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		7690F534DF325A1908AB9982 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -97,7 +103,6 @@
 				30CDE22726E0D566AAE68451 /* Pods-RunnerTests.release.xcconfig */,
 				E843F59CF3E1F7E17B814963 /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -144,6 +149,9 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				8BE240212D8389E700BB8EBD /* Models */,
+				8BE240202D8389DD00BB8EBD /* Utils */,
+				8BE2401F2D8389D700BB8EBD /* Services */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -203,6 +211,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8BE2401F2D8389D700BB8EBD /* Services */,
+				8BE240202D8389DD00BB8EBD /* Utils */,
+				8BE240212D8389E700BB8EBD /* Models */,
 			);
 			name = Runner;
 			productName = Runner;
