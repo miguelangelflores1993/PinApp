@@ -7,6 +7,10 @@ Este proyecto es una aplicación desarrollada en Flutter 3.29.1 que funciona en 
 - `.env.local`: Contiene las URLs necesarias para la configuración local.
 - `.vscode`: Contiene el archivo `launch.json` para facilitar la ejecución y depuración de la aplicación.
 
+## Pruebas - videos del proyecto (ENLACE)
+
+- https://files.fm/u/juvmcjcnvu
+
 ## Arquitectura del Proyecto
 
 ### 1. **Clean Architecture**
